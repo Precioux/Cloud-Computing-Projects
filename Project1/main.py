@@ -1,35 +1,111 @@
-from fastapi import FastAPI, UploadFile, File
+from typing import Union
+import cv2
+from fastapi import FastAPI, File, HTTPException, Response, UploadFile
+import uvicorn
+from src.api.rabbitmq import send
+from src.api.s3 import download_file, upload_file
+from src.db.postgres import advertisements_table, database, engine, metadata
 
-app = FastAPI()
+app = FastAPI(title="service 1")
 
-# endpoint for handling file uploads
-@app.post("/files/")
-async def create_file(id: int, email: str, inputs: str, language: str, enable: int, file: UploadFile = File(...)):
-    # handle file upload and metadata storage
-    file_metadata = {"id": id, "email": email, "inputs": inputs, "language": language, "enable": enable}
-    contents = await file.read()
-    # TODO: process the uploaded file and store the metadata in a database or file system
-    return {"filename": file.filename}
 
-# endpoint for retrieving files by ID
-@app.get("/files/{id}")
-async def read_file(id: int):
-    # TODO: retrieve the file and its metadata by ID from the database or file system
-    # and return it as a response
-    return {"id": id}
+@app.on_event("startup")
+async def startup():
+    await database.connect()
 
-# endpoint for updating file metadata by ID
-@app.put("/files/{id}")
-async def update_file(id: int, email: str = None, inputs: str = None, language: str = None, enable: int = None):
-    # TODO: update the file metadata by ID in the database or file system
-    return {"id": id}
 
-# endpoint for deleting files by ID
-@app.delete("/files/{id}")
-async def delete_file(id: int):
-    # TODO: delete the file and its metadata by ID from the database or file system
-    return {"id": id}
+@app.on_event("shutdown")
+async def shutdown():
+    await database.disconnect()
 
-if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+
+@app.post("/submit_email/")
+async def submit_email(id: int, email: str, inputs: str, language: str, enable: int, file: UploadFile = File(...)):
+    # insert to db
+    query = uploads_table.insert().values(id=id,
+                                           email=email,
+                                           inputs=inputs,
+                                           language=language,
+                                           enable=enable,
+                                           state="pending",
+                                           category="None",
+                                           address="")
+
+    await database.execute(query=query)
+    address = str(id) + "." + file.filename.split(".")[-1]
+    await update_upload(id, address=address)
+
+    # save file on s3
+    upload_file(file, address)
+
+    # put message on rabbitmq
+    send(address)
+
+    # save program inputs to a file
+    inputs_address = str(id) + ".txt"
+    with open(inputs_address, "w") as f:
+        f.write(inputs)
+    upload_file(inputs_address, inputs_address)
+
+    return f"Your submission was registered with ID: {id}"
+
+
+
+
+@app.get("/get_advertisement_output/{id}")
+async def get_advertisement(id: int):
+    query = advertisements_table.select().where(advertisements_table.c.id == id)
+    advertisement = await database.fetch_one(query)
+    if (advertisement == None):
+        return None
+
+    if (advertisement.state == "confirmed"):
+        result = {"category": advertisement.category,
+                  "description": advertisement.description}
+        suffix = advertisement.address.split('.')[-1]
+        add = f"./img/output.{suffix}"
+        download_file(advertisement.address, add)
+        cv2img = cv2.imread(add)
+        res, im_png = cv2.imencode(f"output.{suffix}", cv2img)
+        response = Response(content=im_png.tobytes(), headers=result, media_type="image/jpg")
+
+        return response
+
+    if (advertisement.state == "denied"):
+        return {"result": "Your ad was not approved"}
+
+    if (advertisement.state == "pending"):
+        return {"result": "Your ad is processing"}
+
+
+@app.get("/get_advertisement/{id}")
+async def get_advertisement(id: int):
+    query = advertisements_table.select().where(advertisements_table.c.id == id)
+    advertisement = await database.fetch_one(query)
+    return advertisement
+
+
+@app.put("/update_advertisement/")
+async def update_advertisement(id: int, state: Union[str, None] = None, category: Union[str, None] = None,
+                               address: Union[str, None] = None):
+    if (address):
+        query = (
+            advertisements_table
+                .update()
+                .where(id == advertisements_table.c.id)
+                .values(address=address)
+        )
+
+    else:
+        query = (
+            advertisements_table
+                .update()
+                .where(id == advertisements_table.c.id)
+                .values(state=state,
+                        category=category)
+        )
+    await database.execute(query=query)
+
+
+if __name__ == '__main__':
+    uvicorn.run("main:app", host='localhost', port=8000, reload=True)
