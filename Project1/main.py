@@ -4,7 +4,9 @@ from fastapi import FastAPI, File, HTTPException, Response, UploadFile
 import uvicorn
 from src.api.rabbitmq import send
 from src.api.s3 import download_file, upload_file
-from src.db.postgres import advertisements_table, database, engine, metadata
+from src.db.postgres import database, engine, metadata
+
+from db.postgres import uploads_table
 
 app = FastAPI(title="service 1")
 
