@@ -1,10 +1,9 @@
 from typing import Union
-import cv2
 from fastapi import FastAPI, File, HTTPException, Response, UploadFile
 import uvicorn
-from src.api.rabbitmq import send
-from src.api.s3 import download_file, upload_file
-from src.db.postgres import database, engine, metadata
+from api.rabbitmq import send
+from api.s3 import download_file, upload_file
+from db.postgres import database, engine, metadata
 
 from db.postgres import uploads_table
 
@@ -35,7 +34,7 @@ async def submit_email(id: int, email: str, inputs: str, language: str, enable: 
 
     await database.execute(query=query)
     address = str(id) + "." + file.filename.split(".")[-1]
-    await update_upload(id, address=address)
+    await update_email(id, address=address)
 
     # save file on s3
     upload_file(file, address)
@@ -56,7 +55,7 @@ async def submit_email(id: int, email: str, inputs: str, language: str, enable: 
 
 @app.get("/get_advertisement_output/{id}")
 async def get_advertisement(id: int):
-    query = advertisements_table.select().where(advertisements_table.c.id == id)
+    query = uploads_table.select().where(uploads_table.c.id == id)
     advertisement = await database.fetch_one(query)
     if (advertisement == None):
         return None
@@ -80,29 +79,29 @@ async def get_advertisement(id: int):
         return {"result": "Your ad is processing"}
 
 
-@app.get("/get_advertisement/{id}")
-async def get_advertisement(id: int):
-    query = advertisements_table.select().where(advertisements_table.c.id == id)
+@app.get("/get_email/{id}")
+async def get_email(id: int):
+    query = uploads_table.select().where(uploads_table.c.id == id)
     advertisement = await database.fetch_one(query)
     return advertisement
 
 
-@app.put("/update_advertisement/")
-async def update_advertisement(id: int, state: Union[str, None] = None, category: Union[str, None] = None,
+@app.put("/update_email/")
+async def update_email(id: int, state: Union[str, None] = None, category: Union[str, None] = None,
                                address: Union[str, None] = None):
     if (address):
         query = (
-            advertisements_table
+            uploads_table
                 .update()
-                .where(id == advertisements_table.c.id)
+                .where(id == uploads_table.c.id)
                 .values(address=address)
         )
 
     else:
         query = (
-            advertisements_table
+            uploads_table
                 .update()
-                .where(id == advertisements_table.c.id)
+                .where(id == uploads_table.c.id)
                 .values(state=state,
                         category=category)
         )
