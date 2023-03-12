@@ -1,6 +1,5 @@
 import sqlalchemy
 import databases
-import psycopg2
 
 DATABASE_URL = "postgresql://root:BBHzCFOv9TbK1T0z31987RRa@alfie.iran.liara.ir:31794/postgres"
 database = databases.Database(DATABASE_URL)
