@@ -10,14 +10,13 @@ engine = sqlalchemy.create_engine(
     DATABASE_URL
 )
 
-uploads_table = sqlalchemy.Table(
-    "uploads",
+jobs_table = sqlalchemy.Table(
+    "jobs",
     metadata,
     sqlalchemy.Column("id", sqlalchemy.Integer, primary_key=True),
-    sqlalchemy.Column("upload", sqlalchemy.String),
+    sqlalchemy.Column("upload", sqlalchemy.Integer, sqlalchemy.ForeignKey("uploads.id")),
     sqlalchemy.Column("job", sqlalchemy.String),
-    sqlalchemy.Column("status", sqlalchemy.String)
+    sqlalchemy.Column("status", sqlalchemy.String, default="none-executed")
 )
-
 
 metadata.create_all(engine)
