@@ -2,7 +2,7 @@ from typing import Union
 from fastapi import FastAPI, File, HTTPException, Response, UploadFile
 import uvicorn
 # from api.rabbitmq import send
-# from api.s3 import download_file, upload_file
+from api.s3 import download_file, upload_file
 from db.postgres import database, engine, metadata
 
 from db.postgres import uploads_table
@@ -23,15 +23,15 @@ async def shutdown():
 @app.post("/submit_email/")
 async def submit_email(id: int, email: str, inputs: str, language: str, enable: int, file: UploadFile = File(...)):
     # insert to db
-    query = uploads_table.insert().values(id=id,
-                                           email=email,
-                                           inputs=inputs,
-                                           language=language,
-                                           enable=enable)
-
-    await database.execute(query=query)
+    # query = uploads_table.insert().values(id=id,
+    #                                        email=email,
+    #                                        inputs=inputs,
+    #                                        language=language,
+    #                                        enable=enable)
+    #
+    # await database.execute(query=query)
     address = str(id) + "." + file.filename.split(".")[-1]
-    await update_email(id, address=address)
+    # await update_email(id, address=address)
 
     # save file on s3
     upload_file(file, address)
@@ -46,8 +46,6 @@ async def submit_email(id: int, email: str, inputs: str, language: str, enable: 
     # upload_file(inputs_address, inputs_address)
 
     return f"Your submission was registered with ID: {id}"
-
-
 
 
 # @app.get("/get_advertisement_output/{id}")

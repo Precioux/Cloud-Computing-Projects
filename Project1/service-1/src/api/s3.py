@@ -36,6 +36,7 @@ def upload_file(file, object_name):
         Body=contents,
         Key=object_name
     )
+    print(f'INFO:     File-{object_name} uploaded successfully')
 
 
 def get_url(filename):
