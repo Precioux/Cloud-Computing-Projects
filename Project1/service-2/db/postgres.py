@@ -20,3 +20,14 @@ jobs_table = sqlalchemy.Table(
 )
 
 metadata.create_all(engine)
+
+uploads_table = sqlalchemy.Table(
+    "uploads",
+    metadata,
+    sqlalchemy.Column("id", sqlalchemy.Integer, primary_key=True),
+    sqlalchemy.Column("email", sqlalchemy.String),
+    sqlalchemy.Column("inputs", sqlalchemy.String),
+    sqlalchemy.Column("language", sqlalchemy.String),
+    sqlalchemy.Column("enable", sqlalchemy.Integer)
+)
+
