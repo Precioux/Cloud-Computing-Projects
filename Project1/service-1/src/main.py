@@ -36,8 +36,6 @@ async def submit_email(id: int, email: str, inputs: str, language: str, enable: 
     # save file on s3
     upload_file(file, address)
 
-    # # put message on rabbitmq
-    send(address)
     return f"Your submission was registered with ID: {id}"
 
 @app.get("/check_email/")
@@ -48,31 +46,9 @@ async def check_email(id: int):
     if not result:
         raise HTTPException(status_code=404, detail="Email not found")
     elif result["enable"] == 0:
-        return {"status": True}
+        send(id)
     else:
-        return {"status": False}
-
-@app.put("/update_email/")
-async def update_email(id: int, state: Union[str, None] = None, category: Union[str, None] = None,
-                               address: Union[str, None] = None):
-    if (address):
-        query = (
-            uploads_table
-                .update()
-                .where(id == uploads_table.c.id)
-                .values(address=address)
-        )
-
-    else:
-        query = (
-            uploads_table
-                .update()
-                .where(id == uploads_table.c.id)
-                .values(state=state,
-                        category=category)
-        )
-    await database.execute(query=query)
-
+        raise Exception("You cannot request this code")
 
 if __name__ == '__main__':
     uvicorn.run("main:app", host='localhost', port=8000, reload=True)
