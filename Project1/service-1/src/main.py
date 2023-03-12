@@ -1,7 +1,7 @@
 from typing import Union
 from fastapi import FastAPI, File, HTTPException, Response, UploadFile
 import uvicorn
-# from api.rabbitmq import send
+from api.rabbitmq import send
 from api.s3 import download_file, upload_file
 from db.postgres import database, engine, metadata
 
@@ -22,22 +22,22 @@ async def shutdown():
 
 @app.post("/submit_email/")
 async def submit_email(id: int, email: str, inputs: str, language: str, enable: int, file: UploadFile = File(...)):
-    # insert to db
-    # query = uploads_table.insert().values(id=id,
-    #                                        email=email,
-    #                                        inputs=inputs,
-    #                                        language=language,
-    #                                        enable=enable)
-    #
-    # await database.execute(query=query)
+    #insert to db
+    query = uploads_table.insert().values(id=id,
+                                           email=email,
+                                           inputs=inputs,
+                                           language=language,
+                                           enable=enable)
+
+    await database.execute(query=query)
     address = str(id) + "." + file.filename.split(".")[-1]
     # await update_email(id, address=address)
 
     # save file on s3
     upload_file(file, address)
-    #
+
     # # put message on rabbitmq
-    # send(address)
+    send(address)
 
     # # save program inputs to a file
     # inputs_address = str(id) + ".txt"
