@@ -30,11 +30,11 @@ async def submit_email(id: int, email: str, inputs: str, language: str, enable: 
                                            enable=enable)
 
     await database.execute(query=query)
-    # address = str(id) + "." + file.filename.split(".")[-1]
-    # await update_email(id, address=address)
-    #
-    # # save file on s3
-    # upload_file(file, address)
+    address = str(id) + "." + file.filename.split(".")[-1]
+    await update_email(id, address=address)
+
+    # save file on s3
+    upload_file(file, address)
     #
     # # put message on rabbitmq
     # send(address)

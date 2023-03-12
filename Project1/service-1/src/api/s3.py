@@ -1,36 +1,57 @@
+import sys
 import boto3
+import logging
+from botocore.exceptions import ClientError
 
-# Endpoint URL
-endpoint_url = 'https://precioux-cc-p1.s3.ir-thr-at1.arvanstorage.ir'
+logging.basicConfig(level=logging.INFO)
 
-# Access key ID and secret access key
-access_key = 'YOUR_ACCESS_KEY'
-secret_key = 'YOUR_SECRET_KEY'
+domain = 'https://c525438.parspack.net'
+bucketName = 'c525438'
+accessKey = 'aBiXEYr6whnbrfxc'
+secretKey = 'Z4rDp16QyX6q6lQLdRDZKZvWlGzjepty'
 
-# Bucket name
-bucket_name = 'YOUR_BUCKET_NAME'
+try:
+    s3_resource = boto3.resource(
+        's3',
+        endpoint_url=domain,
+        aws_access_key_id=accessKey,
+        aws_secret_access_key=secretKey
+    )
+except Exception as exc:
+    logging.info(exc)
+else:
 
-# Connect to S3
-s3_resource = boto3.resource(
-    's3',
-    endpoint_url=endpoint_url,
-    aws_access_key_id=access_key,
-    aws_secret_access_key=secret_key
-)
+    bucket = s3_resource.Bucket(bucketName)
 
-# Get a reference to the bucket
-bucket = s3_resource.Bucket(bucket_name)
 
-# List objects in the bucket
-for obj in bucket.objects.all():
-    print(obj.key)
+def list_files():
+    for obj in bucket.objects.all():
+        logging.info(f"object_name: {obj.key}, last_modified: {obj.last_modified}")
 
-# Upload a file to the bucket
-with open('example.txt', 'rb') as f:
-    bucket.put_object(Key='example.txt', Body=f)
 
-# Download a file from the bucket
-bucket.download_file('example.txt', 'downloaded.txt')
+def upload_file(file, object_name):
+    contents = file.file.read()
+    bucket.put_object(
+        ACL='private',
+        Body=contents,
+        Key=object_name
+    )
 
-# Delete a file from the bucket
-bucket.Object('example.txt').delete()
+
+def get_url(filename):
+    filename = str(filename).split("'")[1]
+    url = f"{domain}/{bucketName}/{filename}"
+    return url
+
+
+def download_file(object_name, download_path):
+    bucket.download_file(
+        object_name,
+        download_path
+    )
+
+
+def delete_file(object_name):
+    object_name = 'parspack.png'
+    object = bucket.Object(object_name)
+    object.delete()
