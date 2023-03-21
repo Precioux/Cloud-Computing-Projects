@@ -9,6 +9,6 @@ def send(id):
     channel.queue_declare(queue='emails')
 
     channel.basic_publish(exchange='', routing_key='emails', body=str(id))
-    print(f"INFO:     [x] Sent {id} to RabbitMQ")
+    print(f"INFO:     Sent {id} to RabbitMQ")
     connection.close()
 

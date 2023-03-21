@@ -10,6 +10,16 @@ engine = sqlalchemy.create_engine(
     DATABASE_URL
 )
 
+uploads_table = sqlalchemy.Table(
+    "uploads",
+    metadata,
+    sqlalchemy.Column("id", sqlalchemy.Integer, primary_key=True),
+    sqlalchemy.Column("email", sqlalchemy.String),
+    sqlalchemy.Column("inputs", sqlalchemy.String),
+    sqlalchemy.Column("language", sqlalchemy.String),
+    sqlalchemy.Column("enable", sqlalchemy.Integer)
+)
+
 jobs_table = sqlalchemy.Table(
     "jobs",
     metadata,
@@ -21,13 +31,9 @@ jobs_table = sqlalchemy.Table(
 
 metadata.create_all(engine)
 
-uploads_table = sqlalchemy.Table(
-    "uploads",
-    metadata,
-    sqlalchemy.Column("id", sqlalchemy.Integer, primary_key=True),
-    sqlalchemy.Column("email", sqlalchemy.String),
-    sqlalchemy.Column("inputs", sqlalchemy.String),
-    sqlalchemy.Column("language", sqlalchemy.String),
-    sqlalchemy.Column("enable", sqlalchemy.Integer)
-)
 
+async def get_data_from_db(id):
+    query = uploads_table.select().where(uploads_table.c.id == id)
+    uploaded = await database.fetch_one(query)
+    print(f"INFO:     Got data from DB for {id}")
+    return uploaded
