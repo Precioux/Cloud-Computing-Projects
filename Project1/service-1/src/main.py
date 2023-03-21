@@ -8,7 +8,6 @@ from db.postgres import uploads_table
 
 app = FastAPI(title="service 1")
 
-
 @app.on_event("startup")
 async def startup():
     await database.connect()
@@ -30,8 +29,6 @@ async def submit_email(id: int, email: str, inputs: str, language: str, enable: 
 
     await database.execute(query=query)
     address = str(id) + "." + file.filename.split(".")[-1]
-    # await update_email(id, address=address)
-
     # save file on s3
     upload_file(file, address)
 

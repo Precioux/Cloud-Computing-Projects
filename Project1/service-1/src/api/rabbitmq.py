@@ -12,5 +12,3 @@ def send(id):
     print(f"INFO:     [x] Sent {id} to RabbitMQ")
     connection.close()
 
-if __name__ == '__main__':
-    send("test")
