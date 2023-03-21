@@ -8,6 +8,7 @@ from db.postgres import uploads_table
 
 app = FastAPI(title="service 1")
 
+
 @app.on_event("startup")
 async def startup():
     await database.connect()
@@ -18,14 +19,19 @@ async def shutdown():
     await database.disconnect()
 
 
+@app.get('/up')
+async def up():
+    return f"Hey!"
+
+
 @app.post("/submit_email/")
 async def submit_email(id: int, email: str, inputs: str, language: str, enable: int, file: UploadFile = File(...)):
-    #insert to db
+    # insert to db
     query = uploads_table.insert().values(id=id,
-                                           email=email,
-                                           inputs=inputs,
-                                           language=language,
-                                           enable=enable)
+                                          email=email,
+                                          inputs=inputs,
+                                          language=language,
+                                          enable=enable)
 
     await database.execute(query=query)
     address = str(id) + "." + file.filename.split(".")[-1]
@@ -34,6 +40,7 @@ async def submit_email(id: int, email: str, inputs: str, language: str, enable: 
 
     return f"Your submission was registered with ID: {id}"
 
+#curl -X GET "http://localhost:8000/check_email/?id=6"
 @app.get("/check_email/")
 async def check_email(id: int):
     query = uploads_table.select().where(uploads_table.c.id == id)
@@ -43,7 +50,8 @@ async def check_email(id: int):
     elif result["enable"] == 0:
         send(id)
     else:
-        raise Exception("You cannot request this code")
+        raise HTTPException(status_code=400, detail="You cannot request this code")
+
 
 if __name__ == '__main__':
     uvicorn.run("main:app", host='localhost', port=8000, reload=True)
