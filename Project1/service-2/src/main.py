@@ -6,9 +6,9 @@ import asyncio
 import pika
 import requests
 from db.postgres import database, engine, metadata, jobs_table, uploads_table, get_data_from_db
+import aio_pika
 
 AMQP_URL = "amqps://oujymswf:es5s05JBydcj_gRGJhR_JmPbNgrGwNo9@woodpecker.rmq.cloudamqp.com/oujymswf"
-
 
 # def process_email(ch, method, properties, body):
 #     email_data = json.loads(body)
@@ -46,11 +46,10 @@ def main():
     channel.queue_declare(queue='emails')
 
     def callback(ch, method, properties, body):
-        print(" Received %r" % body)
-        id = str(body).split(".")[0].split("'")[1]
-        # getting data from Database
-        data = get_data_from_db(id)
-
+        print(" Emails Received %r" % body)
+        gotten_id = str(body).split(".")[0].split("'")[1]
+        data = get_data_from_db(gotten_id)
+        print(f'Data : {data}')
 
     channel.basic_consume(queue='emails', on_message_callback=callback, auto_ack=True)
 
@@ -58,9 +57,10 @@ def main():
     channel.start_consuming()
 
 
+
 if __name__ == '__main__':
     try:
-        main()
+        asyncio.run(main())
     except KeyboardInterrupt:
         print('Interrupted')
         try:
