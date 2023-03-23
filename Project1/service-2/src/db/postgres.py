@@ -1,5 +1,6 @@
 import sqlalchemy
 import databases
+import json
 
 DATABASE_URL = "postgresql://root:BBHzCFOv9TbK1T0z31987RRa@alfie.iran.liara.ir:31794/postgres"
 database = databases.Database(DATABASE_URL)
@@ -30,7 +31,6 @@ jobs_table = sqlalchemy.Table(
 metadata.create_all(engine)
 
 
-
 def get_data_from_db(id):
     try:
         with engine.connect() as conn:
@@ -39,7 +39,7 @@ def get_data_from_db(id):
             data = result.fetchone()
             if data:
                 print(f"INFO: Got data from DB for {id}")
-                return str(data)
+                return json.dumps(dict(data))
             else:
                 print(f"INFO: No data found in DB for {id}")
                 return None
