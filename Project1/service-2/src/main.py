@@ -29,10 +29,8 @@ def stringCreator(data):
         if fileData is not None:
             print(f'File Data: {fileData}')
             queryString = create_json(data['language'], data['inputs'], fileData)
-            print(f'Query string: {queryString}')
             # insert to db jobs_table
             query = job_table.insert().values(upload=data['id'], job=queryString)
-            print(query)
             with engine.connect() as conn:
                 conn.execute(query)
             print('Added to job_table successfully')
@@ -40,10 +38,6 @@ def stringCreator(data):
             print('File Content is Empty')
     else:
         print(f"File with id {data['id']} not found!")
-
-
-
-
 
 
 def callback(ch, method, properties, body):
