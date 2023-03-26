@@ -1,3 +1,4 @@
+import asyncio
 import sqlalchemy
 import databases
 import json
@@ -19,15 +20,14 @@ uploads_table = sqlalchemy.Table(
     sqlalchemy.Column("enable", sqlalchemy.Integer)
 )
 
-jobs_table = sqlalchemy.Table(
-    "jobs",
+job_table = sqlalchemy.Table(
+    "job",
     metadata,
     sqlalchemy.Column("id", sqlalchemy.Integer, primary_key=True, autoincrement=True),
     sqlalchemy.Column("upload", sqlalchemy.Integer, sqlalchemy.ForeignKey("uploads.id")),
     sqlalchemy.Column("job", sqlalchemy.String),
     sqlalchemy.Column("status", sqlalchemy.String, default="none-executed")
 )
-
 
 metadata.create_all(engine)
 
@@ -48,3 +48,34 @@ def get_data_from_db(id):
         print(f"ERROR: Failed to get data from DB for {id}")
         print(f"Error message: {e}")
         return None
+
+
+async def print_job_table():
+    try:
+        async with database:
+            query = job_table.select()
+            results = await database.fetch_all(query)
+            print(results)
+    except Exception as e:
+        print(f"ERROR: Failed to get data from DB")
+        print(f"Error message: {e}")
+
+async def print_uploads_table():
+    try:
+        async with database:
+            query = uploads_table.select()
+            results = await database.fetch_all(query)
+            print(results)
+    except Exception as e:
+        print(f"ERROR: Failed to get data from DB")
+        print(f"Error message: {e}")
+
+
+async def main():
+    await database.connect()
+    await print_job_table()
+    await database.disconnect()
+
+
+if __name__ == "__main__":
+    asyncio.run(main())

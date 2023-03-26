@@ -40,7 +40,7 @@ async def submit_email(id: int, email: str, inputs: str, language: str, enable: 
 
     return f"Your submission was registered with ID: {id}"
 
-#curl -X GET "http://localhost:8000/check_email/?id=6"
+#curl -X GET "http://localhost:8000/check_email/?id=5"
 @app.get("/check_email/")
 async def check_email(id: int):
     query = uploads_table.select().where(uploads_table.c.id == id)
