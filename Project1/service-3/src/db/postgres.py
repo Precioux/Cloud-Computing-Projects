@@ -49,6 +49,16 @@ def get_data_from_uploads_table(id):
         print(f"Error message: {e}")
         return None
 
+async def get_none_executed_jobs():
+    try:
+        async with database:
+            query = job_table.select().where(job_table.c.status == "none-executed")
+            results = await database.fetch_all(query)
+            return [json.dumps(dict(row)) for row in results]
+    except Exception as e:
+        print(f"ERROR: Failed to get data from DB")
+        print(f"Error message: {e}")
+
 
 async def print_job_table():
     try:
@@ -73,7 +83,6 @@ async def print_uploads_table():
 
 async def main():
     await database.connect()
-    await print_job_table()
     await database.disconnect()
 
 
