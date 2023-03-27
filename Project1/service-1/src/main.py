@@ -1,10 +1,11 @@
+import json
+import string
 from typing import Union
 from fastapi import FastAPI, File, HTTPException, Response, UploadFile
 import uvicorn
 from api.rabbitmq import send
 from api.s3 import download_file, upload_file
-from db.postgres import database, engine, metadata
-from db.postgres import uploads_table
+from db.postgres import *
 
 app = FastAPI(title="service 1")
 
@@ -52,6 +53,14 @@ async def check_email(id: int):
         send(id)
     else:
         raise HTTPException(status_code=400, detail="You cannot request this code")
+
+#curl -X GET "http://localhost:8000/check_user/?email=uni.mahdipour@gmail.com"
+@app.get("/check_user/")
+async def check_user(email: str):
+    print('Got it!')
+    json_objs = await get_requests_by_email(email)
+    for job in json_objs:
+        j = json.loads(job)
 
 
 if __name__ == '__main__':

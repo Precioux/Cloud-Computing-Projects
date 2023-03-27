@@ -28,6 +28,15 @@ job_table = sqlalchemy.Table(
     sqlalchemy.Column("job", sqlalchemy.String),
     sqlalchemy.Column("status", sqlalchemy.String, default="none-executed")
 )
+results_table = sqlalchemy.Table(
+    "results",
+    metadata,
+    sqlalchemy.Column("id", sqlalchemy.Integer, primary_key=True, autoincrement=True),
+    sqlalchemy.Column("upload", sqlalchemy.Integer, sqlalchemy.ForeignKey("uploads.id")),
+    sqlalchemy.Column("output", sqlalchemy.String, default="none"),
+    sqlalchemy.Column("execute_date", sqlalchemy.String,default="none"),
+    sqlalchemy.Column("filelink", sqlalchemy.String,default="none")
+)
 
 metadata.create_all(engine)
 
@@ -82,6 +91,15 @@ async def print_uploads_table():
         print(f"ERROR: Failed to get data from DB")
         print(f"Error message: {e}")
 
+async def print_results_table():
+    try:
+        async with database:
+            query = results_table.select()
+            results = await database.fetch_all(query)
+            print(results)
+    except Exception as e:
+        print(f"ERROR: Failed to get data from DB")
+        print(f"Error message: {e}")
 
 def enable_off(id):
     with engine.connect() as conn:
@@ -112,6 +130,7 @@ def status_executed(id):
 
 async def main():
     await database.connect()
+    await print_results_table()
     await database.disconnect()
 
 

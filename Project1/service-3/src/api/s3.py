@@ -53,7 +53,7 @@ def upload_file(file, object_name):
 
 
 def get_url(filename):
-    filename = str(filename).split("'")[1]
+    print(f'Gotten filename : {filename}')
     url = f"{domain}/{bucketName}/{filename}"
     return url
 

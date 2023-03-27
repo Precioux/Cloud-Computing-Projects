@@ -11,6 +11,24 @@ from api.mailgun import send_simple_message
 import json
 from tabulate import tabulate
 import asyncio
+import datetime
+from api.s3 import *
+
+
+def add_results(id, output):
+    print(f'id = {id} output = {output}')
+    now = datetime.datetime.now()
+    execute_date = now.strftime("%Y-%m-%d %H:%M:%S")
+    print("Current date and time as string:", execute_date)
+    filelink = get_url(find_file(id))
+    print(f'filelink : {filelink}')
+    # insert to db results_table
+    query_results = results_table.insert().values(upload=id, output=output, execute_date=execute_date,
+                                                  filelink=filelink)
+    with engine.connect() as conn:
+        conn.execute(query_results)
+
+    print('Added to result_table successfully')
 
 
 def sendMail(id, status_id, result):
@@ -35,7 +53,6 @@ def sendMail(id, status_id, result):
     text = f'Hi,\n\nYour code request {status.lower()}ed!\n\n{table}\n\nRegards,\n\nPrecioux'
     send_simple_message(email, subject, text)
     print('Email sent successfully!')
-
 
 
 def checkLang(lang_str):
@@ -75,6 +92,7 @@ def preRunner(job_list):
             print(f'Response : {result}')
             if result['status'] == 200:
                 sendMail(obj['upload'], 1, result)
+                add_results(obj['upload'], result['output'])
             else:
                 sendMail(obj['upload'], 0, result)
         else:

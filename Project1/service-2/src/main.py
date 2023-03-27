@@ -5,7 +5,7 @@ import functools
 import asyncio
 import pika
 import requests
-from db.postgres import database, engine, metadata, job_table, uploads_table, get_data_from_db
+from db.postgres import *
 from api.s3 import *
 
 AMQP_URL = "amqps://oujymswf:es5s05JBydcj_gRGJhR_JmPbNgrGwNo9@woodpecker.rmq.cloudamqp.com/oujymswf"
@@ -30,9 +30,9 @@ def stringCreator(data):
             print(f'File Data: {fileData}')
             queryString = create_json(data['language'], data['inputs'], fileData)
             # insert to db jobs_table
-            query = job_table.insert().values(upload=data['id'], job=queryString)
+            query_jobs = job_table.insert().values(upload=data['id'], job=queryString)
             with engine.connect() as conn:
-                conn.execute(query)
+                conn.execute(query_jobs)
             print('Added to job_table successfully')
         else:
             print('File Content is Empty')

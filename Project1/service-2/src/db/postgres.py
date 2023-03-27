@@ -29,6 +29,16 @@ job_table = sqlalchemy.Table(
     sqlalchemy.Column("status", sqlalchemy.String, default="none-executed")
 )
 
+results_table = sqlalchemy.Table(
+    "results",
+    metadata,
+    sqlalchemy.Column("id", sqlalchemy.Integer, primary_key=True, autoincrement=True),
+    sqlalchemy.Column("upload", sqlalchemy.Integer, sqlalchemy.ForeignKey("uploads.id")),
+    sqlalchemy.Column("output", sqlalchemy.String, default="none"),
+    sqlalchemy.Column("execute_date", sqlalchemy.String,default="none"),
+    sqlalchemy.Column("filelink", sqlalchemy.String,default="none")
+)
+
 metadata.create_all(engine)
 
 
