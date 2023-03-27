@@ -1,17 +1,30 @@
-import asyncio
+import email
 
-import aiohttp
+import requests
+from requests_toolbelt.multipart.encoder import MultipartEncoder
+id = 7
+email = 'uni.mahdipour@gmail.com'
+inputs = ''
+language = 'py'
+enable = 0
+url = "http://localhost:8000/submit_email/?id={}&email={}&inputs={}&language={}&enable={}".format(id, email, inputs, language, enable)
+file_path = "C:/Users/Samin/Desktop/samin.py"
 
-async def main():
-    url = "http://localhost:8000/submit_email/"
-    payload = {'id': '1',
-               'email': 'test@example.com',
-               'inputs': 'example input',
-               'language': 'python',
-               'enable': '1'}
-    files = {'file': open('C:\\Users\\Samin\\Desktop\\test.py', 'rb')}
-    async with aiohttp.ClientSession() as session:
-        async with session.post(url, data=payload, files=files) as resp:
-            print(await resp.text())
+files = {'file': open(file_path, 'rb')}
 
-asyncio.run(main())
+encoder = MultipartEncoder(fields={
+    'file': ('file', open(file_path, 'rb'), 'application/octet-stream')
+})
+
+headers = {
+    'Content-Type': encoder.content_type,
+}
+
+response = requests.post(url, headers=headers, data=encoder.to_string())
+
+if response.status_code == 422:
+    print("Error: 422 Unprocessable Entity")
+    print(response.text)
+    # Print any relevant log entries from the server logs here
+else:
+    print(response.text)

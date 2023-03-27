@@ -24,6 +24,7 @@ async def up():
     return f"Hey!"
 
 
+#curl -X POST -H "Content-Type: multipart/form-data" -F id=7 -F email="uni.mahdipour@gmail.com" -F inputs="" -F language="python" -F enable=0 -F file=@"C:\Users\Samin\Desktop\samin.py" http://localhost:8000/submit_email/
 @app.post("/submit_email/")
 async def submit_email(id: int, email: str, inputs: str, language: str, enable: int, file: UploadFile = File(...)):
     # insert to db
