@@ -7,10 +7,30 @@ from typing import List
 from fastapi import FastAPI, Body
 from typing import List
 import requests
+from api.mailgun import send_simple_message
+import json
+from tabulate import tabulate
 
 
-def sendMail(id, status_id):
-    print('Hey!')
+def sendMail(id, status_id, result):
+    uploads_data = json.loads(get_data_from_uploads_table(id))
+    email = uploads_data['email']
+
+    if status_id == 0:
+        subject = f'Error while compiling code - {id}'
+        status = 'Error'
+    elif status_id == 1:
+        subject = f'Successful Code result - {id}'
+        status = 'Success'
+
+    table_data = [['Response from codeX:', ''], [f'Status: {status}', '']]
+    for key, value in result.items():
+        table_data.append([f'{key}:', value])
+
+    table = tabulate(table_data, tablefmt="plain")
+    text = f'Hi,\n\nYour code request {status.lower()}ed!\n\n{table}\n\nRegards,\n\nPrecioux'
+    send_simple_message(email, subject, text)
+    print('Email sent successfully!')
 
 
 def checkLang(lang_str):
@@ -36,7 +56,6 @@ def preRunner(job_list):
         code_obj = obj.get('job')
         print(f'obj : {obj}')
         code_data = json.loads(code_obj)
-        print(code_data)
         language = checkLang(code_data['language'])
         url = "https://api.codex.jaagrav.in"
         payload = {
@@ -44,19 +63,15 @@ def preRunner(job_list):
             "language": language,
             "inputs": code_data['inputs']
         }
-        print(type(payload))
         headers = {"Authorization": "Bearer <access_token>"}
         response = requests.post(url, json=payload, headers=headers)
         if response.status_code == 200:
             result = response.json()
             print(f'Response : {result}')
-            print(type(result['status']))
             if result['status'] == 200:
-                sendMail(obj['upload'], 1)
+                sendMail(obj['upload'], 1, result)
             else:
-                sendMail(obj['upload'],0)
-
-
+                sendMail(obj['upload'], 0, result)
         else:
             print(f"Error running job {job['id']}: {response.text}")
 
@@ -75,13 +90,11 @@ async def main():
         if new_jobs:
             for job in new_jobs:
                 job_obj = json.loads(job)
-                print(job)
                 job_id = str(job_obj['id'])
                 job_dict = {"id": job_id, "job": job_obj}
                 if job_dict not in job_list:
                     job_list.append(job_dict)
                     print(f"Added job with ID {job_id} to the list")
-                    # print(f'job dict : {job_dict}')
             preRunner(job_list)
         else:
             print("No new jobs found, waiting...")
