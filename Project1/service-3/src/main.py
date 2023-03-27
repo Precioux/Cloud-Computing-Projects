@@ -9,6 +9,10 @@ from typing import List
 import requests
 
 
+def sendMail(id, status_id):
+    print('Hey!')
+
+
 def checkLang(lang_str):
     if lang_str == 'Java' or lang_str == 'java':
         return 'java'
@@ -30,10 +34,8 @@ def preRunner(job_list):
     for job in job_list:
         obj = job.get('job')
         code_obj = obj.get('job')
-        # print(type(code_obj))
-        # print(code_obj)
+        print(f'obj : {obj}')
         code_data = json.loads(code_obj)
-        # print(type(code_data))
         print(code_data)
         language = checkLang(code_data['language'])
         url = "https://api.codex.jaagrav.in"
@@ -48,6 +50,13 @@ def preRunner(job_list):
         if response.status_code == 200:
             result = response.json()
             print(f'Response : {result}')
+            print(type(result['status']))
+            if result['status'] == 200:
+                sendMail(obj['upload'], 1)
+            else:
+                sendMail(obj['upload'],0)
+
+
         else:
             print(f"Error running job {job['id']}: {response.text}")
 
