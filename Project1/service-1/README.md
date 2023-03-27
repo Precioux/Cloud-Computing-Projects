@@ -10,9 +10,3 @@ The main endpoints include:
     - /check_user: A GET endpoint that retrieves a list of job status objects associated with a given email address.
 
 The application is started with Uvicorn and runs on port 8000.
-
-## Requirements
-
-You can install them by running the following command:
-
-pip install -r requirements.txt
