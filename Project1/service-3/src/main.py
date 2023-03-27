@@ -10,6 +10,7 @@ import requests
 from api.mailgun import send_simple_message
 import json
 from tabulate import tabulate
+import asyncio
 
 
 def sendMail(id, status_id, result):
@@ -19,11 +20,12 @@ def sendMail(id, status_id, result):
     if status_id == 0:
         subject = f'Error while compiling code - {id}'
         status = 'Error'
-        asyncio.run(enable_off(id))
+        enable_off(id)
 
     elif status_id == 1:
         subject = f'Successful Code result - {id}'
         status = 'Success'
+        status_executed(id)
 
     table_data = [['Response from codeX:', ''], [f'Status: {status}', '']]
     for key, value in result.items():
@@ -33,6 +35,7 @@ def sendMail(id, status_id, result):
     text = f'Hi,\n\nYour code request {status.lower()}ed!\n\n{table}\n\nRegards,\n\nPrecioux'
     send_simple_message(email, subject, text)
     print('Email sent successfully!')
+
 
 
 def checkLang(lang_str):

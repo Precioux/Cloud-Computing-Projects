@@ -83,15 +83,31 @@ async def print_uploads_table():
         print(f"Error message: {e}")
 
 
-async def enable_off(id):
-    try:
-        async with database:
-            query = uploads_table.update().values(enable=1).where(uploads_table.c.id == id)
-            await database.execute(query)
-            print(f"INFO: Enable changed to 1 for id {id}")
-    except Exception as e:
-        print(f"ERROR: Failed to change enable to 1 for id {id}")
-        print(f"Error message: {e}")
+def enable_off(id):
+    with engine.connect() as conn:
+        query = uploads_table.update().values(enable=0).where(uploads_table.c.id == id)
+        conn.execute(query)
+        print(f"INFO: Updated enable off for {id}")
+    # Fetch the updated row from uploads_table
+    with engine.connect() as conn:
+        query = uploads_table.select().where(uploads_table.c.id == id)
+        result = conn.execute(query)
+        updated_row = result.fetchone()
+        print(f"INFO: Updated row from uploads_table: {updated_row}")
+
+def status_executed(id):
+    with engine.connect() as conn:
+        query = job_table.update().values(status="executed").where(job_table.c.upload == id)
+        conn.execute(query)
+        print(f"INFO: Updated status executed for {id}")
+    # Fetch the updated row from job_table
+    with engine.connect() as conn:
+        query = job_table.select().where(job_table.c.upload == id)
+        result = conn.execute(query)
+        updated_row = result.fetchone()
+        print(f"INFO: Updated row from job_table: {updated_row}")
+
+
 
 
 async def main():
