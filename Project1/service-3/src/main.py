@@ -19,6 +19,8 @@ def sendMail(id, status_id, result):
     if status_id == 0:
         subject = f'Error while compiling code - {id}'
         status = 'Error'
+        asyncio.run(enable_off(id))
+
     elif status_id == 1:
         subject = f'Successful Code result - {id}'
         status = 'Success'

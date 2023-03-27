@@ -49,6 +49,7 @@ def get_data_from_uploads_table(id):
         print(f"Error message: {e}")
         return None
 
+
 async def get_none_executed_jobs():
     try:
         async with database:
@@ -70,6 +71,7 @@ async def print_job_table():
         print(f"ERROR: Failed to get data from DB")
         print(f"Error message: {e}")
 
+
 async def print_uploads_table():
     try:
         async with database:
@@ -78,6 +80,17 @@ async def print_uploads_table():
             print(results)
     except Exception as e:
         print(f"ERROR: Failed to get data from DB")
+        print(f"Error message: {e}")
+
+
+async def enable_off(id):
+    try:
+        async with database:
+            query = uploads_table.update().values(enable=1).where(uploads_table.c.id == id)
+            await database.execute(query)
+            print(f"INFO: Enable changed to 1 for id {id}")
+    except Exception as e:
+        print(f"ERROR: Failed to change enable to 1 for id {id}")
         print(f"Error message: {e}")
 
 
