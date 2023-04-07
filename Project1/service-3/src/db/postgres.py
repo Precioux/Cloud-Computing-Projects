@@ -110,7 +110,7 @@ async def print_results_table():
 
 def enable_off(id):
     with engine.connect() as conn:
-        query = uploads_table.update().values(enable=0).where(uploads_table.c.id == id)
+        query = uploads_table.update().values(enable=1).where(uploads_table.c.id == id)
         conn.execute(query)
         print(f"INFO: Updated enable off for {id}")
     # Fetch the updated row from uploads_table

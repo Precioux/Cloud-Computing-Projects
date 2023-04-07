@@ -91,7 +91,7 @@ def preRunner(job_list):
         if response.status_code == 200:
             result = response.json()
             print(f'Response : {result}')
-            if result['status'] == 200:
+            if result['error'] == '':
                 sendMail(obj['upload'], 1, result)
                 add_results(obj['upload'], result['output'])
             else:
