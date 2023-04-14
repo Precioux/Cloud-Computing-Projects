@@ -4,9 +4,7 @@ from fastapi import FastAPI
 app = FastAPI()
 
 # Create a Redis client
-redis_client = redis.Redis(host='localhost', port=6379, db=0)
-
-API_KEY = "8P71Zm1JorY60oeVYV7LXm9ID3VD2ICO"
+redis_client = redis.Redis(host='myredis', port=6379)
 
 # Define the expiration time for the short URLs cache in minutes
 SHORT_URL_CACHE_EXPIRATION = 5
