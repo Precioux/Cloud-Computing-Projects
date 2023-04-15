@@ -1,5 +1,5 @@
 fastapi
-nredis
-nrequests
-nuvicorn
+redis
+requests
+uvicorn
  
