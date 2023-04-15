@@ -1,11 +1,23 @@
 import redis
 from fastapi import FastAPI
 import json
-
+import requests
+import uvicorn
+import time
 app = FastAPI()
 
 # Create a Redis client
-redis_client = redis.Redis(host='myredis', port=6379)
+redis_client = redis.Redis(host='redis', port=6379)
+
+# Wait for the Redis container to be ready
+while True:
+    try:
+        if redis_client.ping():
+            print("Redis container is active!")
+            break
+    except redis.exceptions.ConnectionError:
+        print("Redis container is not yet ready. Waiting...")
+        time.sleep(1)
 
 # Define the expiration time for the short URLs cache in minutes
 SHORT_URL_CACHE_EXPIRATION = 5
@@ -25,7 +37,12 @@ def toJSON(long_url, short_url, status):
     return json.dumps(response)
 
 
-# curl https://github.com/Precioux/Cloud-Computing-Projects
+@app.get('/test')
+async def test():
+    return 'hey'
+
+
+# curl http://localhost:8000/shorten_url/https://github.com/Precioux/Cloud-Computing-Projects
 @app.get("/shorten_url/{long_url}")
 async def shorten_url(long_url: str):
     # Check if the short URL is already cached in Redis
@@ -44,3 +61,7 @@ async def shorten_url(long_url: str):
         return toJSON(long_url, short_url, False)
     else:
         return {"error": "Failed to shorten URL"}
+
+
+if __name__ == "__main__":
+    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
