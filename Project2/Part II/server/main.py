@@ -6,8 +6,13 @@ import uvicorn
 import time
 app = FastAPI()
 
-# Create a Redis client
-redis_client = redis.Redis(host='redis', port=6379)
+
+# Get the Redis container name
+redis_container_name = "redis-cache"
+
+# Connect to the Redis container
+redis_client = redis.Redis(host=f"{redis_container_name}", port=6379)
+
 
 # Wait for the Redis container to be ready
 while True:
@@ -42,9 +47,10 @@ async def test():
     return 'hey'
 
 
-# curl http://localhost:8000/shorten_url/https://github.com/Precioux/Cloud-Computing-Projects
-@app.get("/shorten_url/{long_url}")
+#curl http://localhost:8000/shorten_url/?long_url=https://aut.ac.ir/
+@app.get("/shorten_url/")
 async def shorten_url(long_url: str):
+    print(f'long URL : {long_url}')
     # Check if the short URL is already cached in Redis
     short_url = redis_client.get(long_url)
     if short_url:

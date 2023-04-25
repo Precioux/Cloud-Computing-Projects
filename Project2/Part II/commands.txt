@@ -1,0 +1,4 @@
+docker build -t redis-cache redis/.
+docker build -t fastapi-server server/.
+docker run -d --name redis-cache --network cc-network -p 6379:6379 redis-cache
+docker run -it --name fastapi-server --network cc-network -p 8000:8000 fastapi-server
