@@ -5,6 +5,16 @@ import requests
 import uvicorn
 import time
 import hashlib
+import yaml
+
+with open("config.yaml", "r") as f:
+    config = yaml.safe_load(f)
+
+# Access the config values
+port = config["port"]
+cache_expiry = config["cache_expiry"]
+api_endpoint = config["api_endpoint"]
+api_key = config["api_key"]
 app = FastAPI()
 
 
@@ -12,7 +22,7 @@ app = FastAPI()
 redis_container_name = "redis-cache"
 
 # Connect to the Redis container
-redis_client = redis.Redis(host=f"{redis_container_name}", port=6379)
+redis_client = redis.Redis(host=f"{redis_container_name}", port=port)
 
 
 # Wait for the Redis container to be ready
@@ -26,10 +36,10 @@ while True:
         time.sleep(1)
 
 # Define the expiration time for the short URLs cache in minutes
-SHORT_URL_CACHE_EXPIRATION = 5
+SHORT_URL_CACHE_EXPIRATION = cache_expiry
 
 # Define API KEY
-API_KEY = "8P71Zm1JorY60oeVYV7LXm9ID3VD2ICO"
+API_KEY = api_key
 
 
 def toJSON(long_url, short_url, status):
@@ -59,7 +69,7 @@ async def shorten_url(long_url: str):
 
     # If the short URL is not cached, hash the long URL and call the Short URL API to get the short URL
     url_hash = hashlib.md5(long_url.encode()).hexdigest()
-    api_url = f"https://api.apilayer.com/short_url/hash"
+    api_url = api_endpoint
     payload = f"url={long_url}".encode("utf-8")
     headers = {"apikey": API_KEY}
     response = requests.post(api_url, headers=headers, data=payload)

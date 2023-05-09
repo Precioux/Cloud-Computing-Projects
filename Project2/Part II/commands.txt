@@ -1,4 +1,12 @@
+To persist the data in the Redis container, you can use a Docker volume. A volume is a way to store data outside
+of a container's filesystem, which ensures that the data is retained even if the container is removed.
+
+docker volume create redis-data
+docker run -d --name redis-cache --network cc-network -p 6379:6379 -v redis-data:/data redis-cache
+
+
 docker build -t redis-cache redis/.
 docker build -t fastapi-server server/.
 docker run -d --name redis-cache --network cc-network -p 6379:6379 redis-cache
 docker run -it --name fastapi-server --network cc-network -p 8000:8000 fastapi-server
+
