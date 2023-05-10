@@ -1,10 +1,8 @@
 import json
-
 import requests
 
 url = "http://localhost:8000/shorten_url/"
-long_url = "https://chat.openai.com/"
-
+long_url = "https://ce.aut.ac.ir/"
 payload = {
     "long_url": long_url
 }

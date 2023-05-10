@@ -1,3 +1,5 @@
 FROM redis:latest
 
-CMD ["redis-server"]
+VOLUME /data
+
+CMD ["redis-server", "--appendonly", "yes"]

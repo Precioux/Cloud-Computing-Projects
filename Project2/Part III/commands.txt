@@ -1,0 +1,4 @@
+minikube start
+
+kubectl create configmap my-config --from-file=config.yaml
+kubectl describe configmap my-config
