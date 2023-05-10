@@ -15,15 +15,14 @@ port = config["port"]
 cache_expiry = config["cache_expiry"]
 api_endpoint = config["api_endpoint"]
 api_key = config["api_key"]
+hostname = config['hostname']
 app = FastAPI()
-
 
 # Get the Redis container name
 redis_container_name = "redis-cache"
 
 # Connect to the Redis container
 redis_client = redis.Redis(host=f"{redis_container_name}", port=port)
-
 
 # Wait for the Redis container to be ready
 while True:
@@ -47,7 +46,7 @@ def toJSON(long_url, short_url, status):
         "longUrl": long_url,
         "shortUrl": short_url,
         "isCached": status,
-        "hostname": "Nyx"
+        "hostname": hostname
     }
 
     return json.dumps(response)
@@ -67,22 +66,23 @@ async def shorten_url(long_url: str):
         print(f'Was in Redis...')
         return toJSON(long_url, short_url.decode(), True)
 
-    # If the short URL is not cached, hash the long URL and call the Short URL API to get the short URL
-    url_hash = hashlib.md5(long_url.encode()).hexdigest()
+    # If the short URL is not cached, call the Short URL API to get the short URL
     api_url = api_endpoint
-    payload = f"url={long_url}".encode("utf-8")
+    payload = long_url.encode("utf-8")
     headers = {"apikey": API_KEY}
-    response = requests.post(api_url, headers=headers, data=payload)
-    print(f'Response : {response.content}')
+    response = requests.request("POST", api_url, headers=headers, data=payload)
+    status_code = response.status_code
+    result = response.text
+    print(f'Status : {status_code}')
+    print(f'Result : {result} ')
     if response.status_code == 200:
-        short_url = response.json().get("result")
+        data = response.json()
+        print(f'Shorten url : {data.get("short_url")}')
         # Cache the short URL in Redis with a expiration time of SHORT_URL_CACHE_EXPIRATION minutes
-        redis_client.setex(long_url, SHORT_URL_CACHE_EXPIRATION * 60, short_url)
-        redis_client.setex(short_url, SHORT_URL_CACHE_EXPIRATION * 60, url_hash)
-        return toJSON(long_url, short_url, False)
+        redis_client.setex(long_url, SHORT_URL_CACHE_EXPIRATION * 60, data.get("short_url"))
+        return toJSON(long_url, data.get("short_url"), False)
     else:
         return {"error": "Failed to shorten URL"}
-
 
 
 if __name__ == "__main__":

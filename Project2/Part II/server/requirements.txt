@@ -2,4 +2,4 @@ fastapi
 redis
 requests
 uvicorn
- 
+PyYAML==5.4.1
