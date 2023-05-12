@@ -1,7 +1,7 @@
 import requests
 import urllib.parse
 
-body_url = "https://github.com/Precioux/Cloud-Computing-Projects"
+body_url = "https://hub.docker.com/"
 encoded_url = urllib.parse.quote(body_url, safe=':/')
 print(f'after encoding: {encoded_url}')
 

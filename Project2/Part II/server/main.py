@@ -4,7 +4,6 @@ import json
 import requests
 import uvicorn
 import time
-import hashlib
 import yaml
 
 with open("config.yaml", "r") as f:

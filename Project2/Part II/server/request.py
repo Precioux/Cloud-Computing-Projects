@@ -2,7 +2,7 @@ import json
 import requests
 
 url = "http://localhost:8000/shorten_url/"
-long_url = "https://ce.aut.ac.ir/"
+long_url = "https://hub.docker.com/"
 payload = {
     "long_url": long_url
 }
