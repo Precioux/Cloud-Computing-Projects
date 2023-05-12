@@ -1,25 +1,27 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: fastapi-server
+  labels:
+    app: fastapi-server-deployment
+  name: fastapi-server-deployment
 spec:
   replicas: 2
   selector:
     matchLabels:
-      app: fastapi-server
+      app: fastapi-server-deployment
   template:
     metadata:
       labels:
-        app: fastapi-server
+        app: fastapi-server-deployment
     spec:
       containers:
         - name: fastapi-server
-          image: <your-image-name>
+          image: precioux/fastapi-server:latest
           ports:
-            - containerPort: 80
+            - containerPort: 8000
           env:
             - name: REDIS_HOST
-              value: redis-cache
+              value: redis-cache-service
             - name: REDIS_PORT
               value: "6379"
           volumeMounts:

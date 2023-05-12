@@ -1,15 +1,18 @@
 minikube start
 
-kubectl create configmap my-config --from-file=config.yaml
-kubectl describe configmap my-config
+kubectl create configmap redis-config --from-file=config.yaml
+kubectl apply -f deployment.yaml
+kubectl apply -f redis-service.yaml
+kubectl apply -f redis-pv.yaml
+kubectl apply -f redis-pvc.yaml
+
+kubectl create configmap server-config --from-file=config.yaml
+kubectl describe configmap server-config
 kubectl apply -f deployment.yaml
 kubectl apply -f fastapi-service.yaml
 kubectl get deployment fastapi-server
 
-kubectl create -f redis-config.yaml
-kubectl apply -f deployment.yaml
-kubectl apply -f rediscache-service.yaml
-kubectl apply -f redis-pv.yaml
 
 kubectl get deployment redis-cache
 kubectl get pvc
+
