@@ -13,14 +13,14 @@ spec:
         app: redis-cache
     spec:
       containers:
-        - name: redis
+        - name: redis-cache
           image: redis:latest
           ports:
             - containerPort: 6379
           volumeMounts:
             - name: redis-pv
               mountPath: /data
-          command: ["redis-server", "--bind", "0.0.0.0", "--port", "6379"]
+          command: ["redis-cache", "--bind", "0.0.0.0", "--port", "6379"]
       volumes:
         - name: redis-pv
           persistentVolumeClaim:

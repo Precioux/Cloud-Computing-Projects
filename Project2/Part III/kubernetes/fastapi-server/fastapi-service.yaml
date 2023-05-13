@@ -3,7 +3,6 @@ kind: Service
 metadata:
   name: fastapi-server-deployment
 spec:
-  type: LoadBalancer
   selector:
     app: fastapi-server-deployment
   ports:

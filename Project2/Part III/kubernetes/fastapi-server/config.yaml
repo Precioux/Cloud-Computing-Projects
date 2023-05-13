@@ -1,6 +1,11 @@
-# config.yaml
-port: 6379
-cache_expiry: 5
-api_endpoint: f"https://api.apilayer.com/short_url/hash"
-api_key: "8P71Zm1JorY60oeVYV7LXm9ID3VD2ICO"
-hostname: "Nyx"
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: server-config
+data:
+  server-config.yaml: |
+    port: "6379"
+    cache_expiry: "5"
+    api_endpoint: "https://api.apilayer.com/short_url/hash"
+    api_key: "8P71Zm1JorY60oeVYV7LXm9ID3VD2ICO"
+    hostname: "Nyx"

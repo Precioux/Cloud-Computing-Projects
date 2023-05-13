@@ -15,10 +15,8 @@ cache_expiry = config["cache_expiry"]
 api_endpoint = config["api_endpoint"]
 api_key = config["api_key"]
 hostname = config['hostname']
+redis_container_name = config['redis-server']
 app = FastAPI()
-
-# Get the Redis container name
-redis_container_name = "redis-cache"
 
 # Connect to the Redis container
 redis_client = redis.Redis(host=f"{redis_container_name}", port=port)

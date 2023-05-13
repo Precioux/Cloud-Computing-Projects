@@ -19,21 +19,11 @@ spec:
           image: precioux/fastapi-server:latest
           ports:
             - containerPort: 8000
-          env:
-            - name: REDIS_HOST
-              value: redis-cache-service
-            - name: REDIS_PORT
-              value: "6379"
           volumeMounts:
             - name: config-volume
               mountPath: /app/config.yaml
               subPath: config.yaml
-            - name: code-volume
-              mountPath: /app
       volumes:
         - name: config-volume
           configMap:
-            name: fastapi-server-config
-        - name: code-volume
-          configMap:
-            name: fastapi-server-code
+            name: server-config

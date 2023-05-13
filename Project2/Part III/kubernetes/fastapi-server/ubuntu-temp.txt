@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: ubuntu-deployment
+  name: ubuntu-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ubuntu-deployment
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: ubuntu-deployment
+    spec:
+      containers:
+      - image: precioux/my-ubuntu-image
+        name: my-ubuntu-image
+        command: ["/bin/sleep"]
+        args: ["infinity"]
+        resources: {}
+status: {}
