@@ -1,12 +1,12 @@
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: redis-pv
+  name: pv
   labels:
     type: local
 spec:
   capacity:
-    storage: 100Mb
+    storage: 100Mi
   storageClassName: standard
   accessModes:
     - ReadWriteOnce
