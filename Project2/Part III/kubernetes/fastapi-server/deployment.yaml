@@ -20,9 +20,9 @@ spec:
           ports:
             - containerPort: 8000
           volumeMounts:
-            - name: config-volume
+            - name: server-config-volume
               mountPath: /app/config.yaml
       volumes:
-        - name: config-volume
+        - name: server-config-volume
           configMap:
             name: server-config
