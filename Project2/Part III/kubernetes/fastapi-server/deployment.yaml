@@ -22,7 +22,11 @@ spec:
           volumeMounts:
             - name: server-config-volume
               mountPath: /app/config.yaml
+              subPath: config.yaml
       volumes:
         - name: server-config-volume
           configMap:
             name: server-config
+            items:
+              - key: server-config.yaml
+                path: config.yaml
