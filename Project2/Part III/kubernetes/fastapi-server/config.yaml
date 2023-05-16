@@ -3,7 +3,7 @@ kind: ConfigMap
 metadata:
   name: server-config
 data:
-  server-config.yaml:
+  server-config.yaml: |
     port: 6379
     cache_expiry: 5
     api_endpoint: "https://api.apilayer.com/short_url/hash"
