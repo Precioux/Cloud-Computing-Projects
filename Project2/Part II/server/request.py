@@ -2,7 +2,7 @@ import json
 import requests
 
 url = "http://localhost:8000/shorten_url/"
-long_url = "https://hub.docker.com/"
+long_url = "https://www.careerplanner.com/8CognitiveFunctions/Cognitive-Functions-Simply-Explained.cfm"
 payload = {
     "long_url": long_url
 }

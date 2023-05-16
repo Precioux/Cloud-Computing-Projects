@@ -6,7 +6,7 @@ import uvicorn
 import time
 import yaml
 
-with open("config.yaml", "r") as f:
+with open("conf/config.yaml", "r") as f:
     config = yaml.safe_load(f)
 
 # Access the config values
@@ -76,7 +76,8 @@ async def shorten_url(long_url: str):
         data = response.json()
         print(f'Shorten url : {data.get("short_url")}')
         # Cache the short URL in Redis with a expiration time of SHORT_URL_CACHE_EXPIRATION minutes
-        redis_client.setex(long_url, SHORT_URL_CACHE_EXPIRATION * 60, data.get("short_url"))
+        redis_client.setex(
+            long_url, SHORT_URL_CACHE_EXPIRATION * 60, data.get("short_url"))
         return toJSON(long_url, data.get("short_url"), False)
     else:
         return {"error": "Failed to shorten URL"}
