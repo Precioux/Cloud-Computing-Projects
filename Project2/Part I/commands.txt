@@ -1,0 +1,11 @@
+docker build -t my-ubuntu-image
+
+docker images
+
+docker login
+docker tag my-ubuntu-image precioux/my-ubuntu-image:latest
+docker push precioux/my-ubuntu-image:latest
+
+docker run -it precioux/my-ubuntu-image:latest /bin/bash 
+
+curl wttr.in/moon
