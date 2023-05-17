@@ -4,7 +4,7 @@ metadata:
   name: fastapi-server-service
 spec:
   selector:
-    app: fastapi-server-service
+    app: fastapi-server-deployment
   ports:
     - protocol: TCP
       port: 8000

@@ -15,8 +15,9 @@ kubectl get deployment fastapi-server
 kubectl apply -f ubuntu-deployment.yaml
 kubectl exec -it ubuntu-deployment-546bf655c4-p58c9 -- /bin/bash
 
-kubectl get svc fastapi-server-service
-curl http://< 10.108.253.196>:8000/test
+
+curl fastapi-server-service:8000/test
+curl fastapi-server-service:8000/shorten_url/?long_url=h//www.aut.ac.ir
 
 
 

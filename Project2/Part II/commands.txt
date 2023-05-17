@@ -3,7 +3,9 @@ docker build -t fastapi-server server/.
 
 docker login
 docker tag fastapi-server precioux/fastapi-server:latest
+docker tag fastapi-server precioux/fastapi-server2:latest
 docker push precioux/fastapi-server:latest
+docker push precioux/fastapi-server2:latest
 docker run -d -p 80:80 precioux/fastapi-server:latest
 
 

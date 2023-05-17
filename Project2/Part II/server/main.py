@@ -27,7 +27,8 @@ while True:
         if redis_client.ping():
             print("Redis container is active!")
             break
-    except redis.exceptions.ConnectionError:
+    except redis.exceptions.ConnectionError as e:
+        print(e)
         print("Redis container is not yet ready. Waiting...")
         time.sleep(1)
 
