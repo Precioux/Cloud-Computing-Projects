@@ -8,6 +8,7 @@ hadoop fs -rm /user/root/input/analysis.py
 hdfs dfs -ls /user/root/input/
 
 #adding file to hadoop
+docker cp dataset.csv namenode:/CC
 docker cp mapper.py namenode:mapper.py
 docker cp reducer.py namenode:reducer.py
 
