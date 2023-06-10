@@ -2,13 +2,13 @@
 docker exec -it namenode bash
 
 #deleting file
-hadoop fs -rm /user/root/input/analysis.py
+hadoop fs -rm /user/root/input/reducer.py
 
 #ls 
 hdfs dfs -ls /user/root/input/
 
 #adding file to hadoop
-docker cp dataset.csv namenode:/CC
+docker cp mapper.py namenode:/CC/ms/
 docker cp mapper.py namenode:mapper.py
 docker cp reducer.py namenode:reducer.py
 
@@ -18,18 +18,12 @@ hadoop fs -put reducer.py /user/root/input/
 
 #running
 hadoop jar /opt/hadoop-3.2.1/share/hadoop/tools/lib/hadoop-streaming-3.2.1.jar \
+    -file  mapper_m.py \
+    -mapper "python3 mapper.py" \
+    -file  reducer_m.py\
+    -reducer "python3 reducer.py" \
     -input /user/root/input/dataset.csv \
-    -output /user/root/output0_0 \
-    -mapper /user/root/input/mapper.py \
-    -reducer /user/root/input/reducer.py
-
-hadoop jar /opt/hadoop-3.2.1/share/hadoop/tools/lib/hadoop-streaming-3.2.1.jar \
--files /user/root/input/mapper.py \
--mapper "python3 mapper.py" \
--files /user/root/input/reducer.py \
--reducer "python3 reducer.py" \
--input dataset.csv \
--output /user/root/output0_1
+    -output /CC/Q1/outputm3 \
 
 #jar
 /opt/hadoop-3.2.1/share/hadoop/tools/lib/hadoop-streaming-3.2.1.jar
