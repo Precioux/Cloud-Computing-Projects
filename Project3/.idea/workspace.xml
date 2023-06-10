@@ -3,9 +3,9 @@
   <component name="ChangeListManager">
     <list default="true" id="3d92c1cf-7bc4-4e39-9579-319da6f8527f" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/New Microsoft Word Document.docx" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/cmd.txt" beforeDir="false" afterPath="$PROJECT_DIR$/cmd.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/codes/1/mapper.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/codes/1/reducer.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/~$w Microsoft Word Document.docx" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -51,7 +51,7 @@
       <workItem from="1686328522943" duration="294000" />
       <workItem from="1686348319518" duration="1891000" />
       <workItem from="1686422630742" duration="1063000" />
-      <workItem from="1686423900126" duration="3445000" />
+      <workItem from="1686423900126" duration="4014000" />
     </task>
     <servers />
   </component>

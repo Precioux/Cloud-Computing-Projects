@@ -18,12 +18,12 @@ hadoop fs -put reducer.py /user/root/input/
 
 #running
 hadoop jar /opt/hadoop-3.2.1/share/hadoop/tools/lib/hadoop-streaming-3.2.1.jar \
-    -file  mapper_m.py \
+    -file  mapper.py \
     -mapper "python3 mapper.py" \
-    -file  reducer_m.py\
+    -file  reducer.py\
     -reducer "python3 reducer.py" \
     -input /user/root/input/dataset.csv \
-    -output /CC/Q1/outputm3 \
+    -output /CC/ms/outputs0 \
 
 #jar
 /opt/hadoop-3.2.1/share/hadoop/tools/lib/hadoop-streaming-3.2.1.jar
