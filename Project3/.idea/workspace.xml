@@ -3,9 +3,10 @@
   <component name="ChangeListManager">
     <list default="true" id="3d92c1cf-7bc4-4e39-9579-319da6f8527f" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/New Microsoft Word Document.docx" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/cmd.txt" beforeDir="false" afterPath="$PROJECT_DIR$/cmd.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/~$w Microsoft Word Document.docx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/codes/analysis.py" beforeDir="false" afterPath="$PROJECT_DIR$/codes/analysis.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hadoop/mapper2.py" beforeDir="false" afterPath="$PROJECT_DIR$/hadoop/mapper2.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hadoop/reducer2.py" beforeDir="false" afterPath="$PROJECT_DIR$/hadoop/reducer2.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -21,6 +22,14 @@
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="GitSEFilterConfiguration">
+    <file-type-list>
+      <filtered-out-file-type name="LOCAL_BRANCH" />
+      <filtered-out-file-type name="REMOTE_BRANCH" />
+      <filtered-out-file-type name="TAG" />
+      <filtered-out-file-type name="COMMIT_BY_MESSAGE" />
+    </file-type-list>
   </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
@@ -52,10 +61,22 @@
       <workItem from="1686348319518" duration="1891000" />
       <workItem from="1686422630742" duration="1063000" />
       <workItem from="1686423900126" duration="4014000" />
+      <workItem from="1686428687529" duration="5847000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/hadoop/reducer.py</url>
+          <line>15</line>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>

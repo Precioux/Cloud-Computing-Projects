@@ -1,7 +1,24 @@
 import json
 from mrjob.job import MRJob
 import csv
-
+from datetime import datetime
+biden_ny = 0
+biden_tx = 0
+biden_cl = 0
+biden_fl = 0
+tot_ny=0
+tot_tx=0
+tot_cl=0
+tot_fl=0
+trump_ny = 0
+trump_tx = 0
+trump_cl = 0
+trump_fl = 0
+both_ny = 0
+both_tx = 0
+both_cl = 0
+both_fl = 0
+States = {'New York', 'Texas', 'California', 'Florida'}
 
 class TweetAnalysis(MRJob):
     def mapper(self, _, line):
@@ -9,97 +26,88 @@ class TweetAnalysis(MRJob):
         # Use csv.reader to split the line correctly
         reader = csv.reader([line])
         columns = next(reader)
-
         if columns[0] == 'created_at':
             return
-        tweet = columns[2]
+        date_string = columns[0]
+        date_object = datetime.strptime(date_string, "%Y-%m-%d %H:%M:%S")
+        hour = date_object.hour
+        state = columns[18]
         candidate = ''
-        if ((
-                    'Donald' or 'Trump' or 'donald' or 'trump' or 'DonaldTrump' or 'TRUMP' or 'realDonaldTrump' or '#Donald' or '#Trump' or '#donald' or '#trump' or '#DonaldTrump' or '#TRUMP' or '#realDonaldTrump') in tweet) and (
-                (
-                        'Joe' or 'joe' or 'Biden' or 'biden' or 'JoeBiden' or 'BIDEN' or '#Biden' or '#BidenHarris' or '#Joe' or '#joe' or '#Biden' or '#biden' or '#JoeBiden' or '#BIDEN') in tweet):
-            candidate = 'Both Candidates'
-        elif (
-                'Donald' or 'Trump' or 'donald' or 'trump' or 'DonaldTrump' or 'TRUMP' or 'realDonaldTrump' or '#Donald' or '#Trump' or '#donald' or '#trump' or '#DonaldTrump' or '#TRUMP' or '#realDonaldTrump') in tweet:
-            candidate = 'Donald Trump'
-        elif (
-                'Joe' or 'joe' or 'Biden' or 'biden' or 'JoeBiden' or 'BIDEN' or '#Biden' or '#BidenHarris' or '#Joe' or '#joe' or '#Biden' or '#biden' or '#JoeBiden' or '#BIDEN' or 'Obama' or '#Obama' or 'Harris' or '#Harris') in tweet:
-            candidate = 'Joe Biden'
-        else:
-            candidate = 'Not recognized'
+
+        if state in States:
+            if 9 <= hour <= 17:
+                tweet = columns[2]
+                if ('Donald' or 'Trump' or 'donald' or 'trump' or 'DonaldTrump' or 'TRUMP' or 'realDonaldTrump' or '#Donald' or '#Trump' or '#donald' or '#trump' or '#DonaldTrump' or '#TRUMP' or '#realDonaldTrump') in tweet and ('Joe' or 'joe' or 'Biden' or 'biden' or 'JoeBiden' or 'BIDEN' or '#Biden' or '#BidenHarris' or '#Joe' or '#joe' or '#Biden' or '#biden' or '#JoeBiden' or '#BIDEN') in tweet:
+                    candidate = 'Both Candidates'
+                elif (
+                        'Donald' or 'Trump' or 'donald' or 'trump' or 'DonaldTrump' or 'TRUMP' or 'realDonaldTrump' or '#Donald' or '#Trump' or '#donald' or '#trump' or '#DonaldTrump' or '#TRUMP' or '#realDonaldTrump') in tweet:
+                    candidate = 'Donald Trump'
+                elif (
+                        'Joe' or 'joe' or 'Biden' or 'biden' or 'JoeBiden' or 'BIDEN' or '#Biden' or '#BidenHarris' or '#Joe' or '#joe' or '#Biden' or '#biden' or '#JoeBiden' or '#BIDEN' or 'Obama' or '#Obama' or 'Harris' or '#Harris') in tweet:
+                    candidate = 'Joe Biden'
+                else:
+                    candidate = 'Not recognized'
 
         data = {
             'candidate': candidate,
-            'likes': float(columns[3]),
-            'retweets': float(columns[4]),
-            'source': columns[5]
+            'state': state,
+            'hour' : hour
         }
 
         yield None, json.dumps(data)
 
     def reducer(self, key, values):
-        # Initialize variables
-        biden_likes = 0
-        biden_iphone = 0
-        biden_android = 0
-        biden_web = 0
-        biden_rets = 0
-        trump_likes = 0
-        trump_iphone = 0
-        trump_android = 0
-        trump_web = 0
-        trump_rets = 0
-        both_likes = 0
-        both_iphone = 0
-        both_android = 0
-        both_web = 0
-        both_rets = 0
-
+        global tot_ny, both_ny, trump_ny, tot_tx, both_tx, trump_tx, tot_cl, both_cl, trump_cl, both_fl, tot_fl, trump_fl, biden_fl, biden_tx, biden_ny, biden_cl
+        output = ''
         for value in values:
             data = json.loads(value)
             candidate = data['candidate']
-            likes = data['likes']
-            retweets = data['retweets']
-            source = data['source']
+            state = data['state']
+            if state in States:
+                if state == 'New York':
+                    tot_ny+=1
+                    if candidate == 'Both Candidates':
+                        biden_ny+=1
+                    elif candidate == 'Donald Trump':
+                        trump_ny+=1
+                    elif candidate == 'Joe Biden':
+                        both_ny=+1
+                if state == 'Texas':
+                    tot_tx+=1
+                    if candidate == 'Both Candidates':
+                        biden_tx+=1
+                    elif candidate == 'Donald Trump':
+                        trump_tx+=1
+                    elif candidate == 'Joe Biden':
+                        both_tx=+1
+                if state == 'California':
+                    tot_cl+=1
+                    if candidate == 'Both Candidates':
+                        biden_cl+=1
+                    elif candidate == 'Donald Trump':
+                        trump_cl+=1
+                    elif candidate == 'Joe Biden':
+                        both_cl=+1
+                if state == 'Florida':
+                    tot_fl+=1
+                    if candidate == 'Both Candidates':
+                        biden_fl+=1
+                    elif candidate == 'Donald Trump':
+                        trump_fl+=1
+                    elif candidate == 'Joe Biden':
+                        both_fl=+1
 
-            if candidate == 'Joe Biden':
-                biden_likes += likes
-                biden_rets += retweets
-                if source == 'Twitter for iPhone':
-                    biden_iphone += 1
-                elif source == 'Twitter for Android':
-                    biden_android += 1
-                elif source == 'Twitter Web App':
-                    biden_web += 1
 
-            elif candidate == 'Donald Trump':
-                trump_likes += likes
-                trump_rets += retweets
-                if source == 'Twitter for iPhone':
-                    trump_iphone += 1
-                elif source == 'Twitter for Android':
-                    trump_android += 1
-                elif source == 'Twitter Web App':
-                    trump_web += 1
 
-            elif candidate == 'Both Candidates':
-                both_likes += likes
-                both_rets += retweets
-                if source == 'Twitter for iPhone':
-                    both_iphone += 1
-                elif source == 'Twitter for Android':
-                    both_android += 1
-                elif source == 'Twitter Web App':
-                    both_web += 1
-
-        # Output the results
-        output1 = f"Joe Biden    likes: {biden_likes}    retweets: {biden_rets}      Twitter Web App: {biden_web}    Twitter for iPhone: {biden_iphone}      Twitter for Android: {biden_android}"
-        output2 = f"Donald Trump    likes: {trump_likes}    retweets: {trump_rets}      Twitter Web App: {trump_web}    Twitter for iPhone: {trump_iphone}      Twitter for Android: {trump_android}"
-        output3 = f"Both Candidates     likes: {both_likes}     retweets: {both_rets}       Twitter Web App: {both_web}     Twitter for iPhone: {both_iphone}       Twitter for Android: {both_android}"
+        output1 =f'california {biden_cl} {trump_cl} {both_cl} {tot_cl}'
+        output2 = f'newyork {biden_ny} {trump_ny} {both_ny} {tot_ny}'
+        output3 = f'texas  {biden_tx} {trump_tx} {both_tx} {tot_tx}'
+        output4 = f'florida {biden_fl} {trump_fl} {both_fl} {tot_fl}'
 
         yield key, output1
         yield key, output2
         yield key, output3
+        yield key, output4
 
 
 if __name__ == '__main__':

@@ -2,13 +2,13 @@
 docker exec -it namenode bash
 
 #deleting file
-hadoop fs -rm /user/root/input/reducer.py
+hadoop fs -rm /CC/Q2/reducer2.py
 
 #ls 
 hdfs dfs -ls /user/root/input/
 
 #adding file to hadoop
-docker cp mapper.py namenode:/CC/ms/
+docker cp mapper2.py namenode:/CC/s2/
 docker cp mapper.py namenode:mapper.py
 docker cp reducer.py namenode:reducer.py
 
@@ -25,5 +25,17 @@ hadoop jar /opt/hadoop-3.2.1/share/hadoop/tools/lib/hadoop-streaming-3.2.1.jar \
     -input /user/root/input/dataset.csv \
     -output /CC/ms/outputs0 \
 
+hadoop jar /opt/hadoop-3.2.1/share/hadoop/tools/lib/hadoop-streaming-3.2.1.jar \
+    -file  mapper2.py \
+    -mapper "python3 mapper2.py" \
+    -file  reducer2.py\
+    -reducer "python3 reducer2.py" \
+    -input /user/root/input/dataset.csv \
+    -output /CC/s2222/outputs0 \
+
+
 #jar
 /opt/hadoop-3.2.1/share/hadoop/tools/lib/hadoop-streaming-3.2.1.jar
+
+#output
+hdfs dfs -cat /CC/s2222/outputs0/part-00000
