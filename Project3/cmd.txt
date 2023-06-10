@@ -8,7 +8,7 @@ hadoop fs -rm /CC/Q2/reducer2.py
 hdfs dfs -ls /user/root/input/
 
 #adding file to hadoop
-docker cp mapper2.py namenode:/CC/s2/
+docker cp mapper3.py namenode:/CC/Q3/
 docker cp mapper.py namenode:mapper.py
 docker cp reducer.py namenode:reducer.py
 
@@ -33,9 +33,17 @@ hadoop jar /opt/hadoop-3.2.1/share/hadoop/tools/lib/hadoop-streaming-3.2.1.jar \
     -input /user/root/input/dataset.csv \
     -output /CC/s2222/outputs0 \
 
+hadoop jar /opt/hadoop-3.2.1/share/hadoop/tools/lib/hadoop-streaming-3.2.1.jar \
+    -file  mapper3.py \
+    -mapper "python3 mapper3.py" \
+    -file  reducer3.py\
+    -reducer "python3 reducer3.py" \
+    -input /user/root/input/dataset.csv \
+    -output /CC/Q3/outputs0 \
+
 
 #jar
 /opt/hadoop-3.2.1/share/hadoop/tools/lib/hadoop-streaming-3.2.1.jar
 
 #output
-hdfs dfs -cat /CC/s2222/outputs0/part-00000
+hdfs dfs -cat /CC/Q3/outputs0/part-00000
