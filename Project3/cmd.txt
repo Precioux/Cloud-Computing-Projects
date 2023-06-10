@@ -23,9 +23,9 @@ hadoop jar /opt/hadoop-3.2.1/share/hadoop/tools/lib/hadoop-streaming-3.2.1.jar \
     -reducer /user/root/input/reducer.py
 
 hadoop jar /opt/hadoop-3.2.1/share/hadoop/tools/lib/hadoop-streaming-3.2.1.jar \
--file /user/root/input/mapper.py \
+-files /user/root/input/mapper.py \
 -mapper "python3 mapper.py" \
--file /user/root/input/reducer.py \
+-files /user/root/input/reducer.py \
 -reducer "python3 reducer.py" \
 -input dataset.csv \
 -output /user/root/output0_1
