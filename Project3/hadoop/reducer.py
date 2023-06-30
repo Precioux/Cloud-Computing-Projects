@@ -63,8 +63,8 @@ ios = 'Twitter for iPhone:'
 android = 'Twitter for Android:'
 
 print('%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s' % (
-        biden, likes_str,biden_likes,retweets_str,biden_rets,web,biden_web,ios,biden_iphone,android,biden_android))
+    biden, likes_str, biden_likes, retweets_str, biden_rets, web, biden_web, ios, biden_iphone, android, biden_android))
 print('%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s' % (
-        trump, likes_str,trump_likes,retweets_str,trump_rets,web,trump_web,ios,trump_iphone,android,trump_android))
+    trump, likes_str, trump_likes, retweets_str, trump_rets, web, trump_web, ios, trump_iphone, android, trump_android))
 print('%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s' % (
-        both, likes_str,both_likes,retweets_str,both_rets,web,both_web,ios,both_iphone,android,both_android))
+    both, likes_str, both_likes, retweets_str, both_rets, web, both_web, ios, both_iphone, android, both_android))
