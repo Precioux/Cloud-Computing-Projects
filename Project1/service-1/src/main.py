@@ -98,4 +98,4 @@ async def check_user(email: str):
 
 
 if __name__ == '__main__':
-    uvicorn.run("main:app", host='localhost', port=8000, reload=True)
+    uvicorn.run("main:app", host='localhost', port=6000, reload=True)
